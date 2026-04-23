@@ -327,6 +327,31 @@
       border-color: #1a4a25;
     }
 
+    /* TAG GRID */
+    .tag-grid {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.5rem;
+    }
+    .handle-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.85rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .handle-item:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
     /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
@@ -404,6 +429,15 @@
     <symbol id="icon-quote" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
       <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+    </symbol>
+    <symbol id="icon-at" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+    </symbol>
+    <symbol id="icon-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
     </symbol>
   </svg>
 
@@ -670,6 +704,49 @@
             </div>
             <div class="reel-status">Planned</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAG LIST -->
+    <div>
+      <div class="section-label">
+        <svg width="11" height="11" style="color:var(--accent)"><use href="#icon-at"/></svg>
+        Tag List
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="16" height="16" style="color:var(--accent)"><use href="#icon-at"/></svg>
+          </div>
+          <h2>Handles to Tag</h2>
+        </div>
+        <p>Tag these accounts when posting clips and the origin video.</p>
+        <div class="tag-grid">
+          <a class="handle-item" href="https://www.instagram.com/dundealonthetrak/" target="_blank">
+            <svg width="14" height="14" style="color:var(--accent)"><use href="#icon-ig"/></svg>
+            @dundealonthetrak
+          </a>
+          <a class="handle-item" href="https://www.instagram.com/von_tchalla/" target="_blank">
+            <svg width="14" height="14" style="color:var(--accent)"><use href="#icon-ig"/></svg>
+            @von_tchalla
+          </a>
+          <a class="handle-item" href="https://www.instagram.com/babyd_amg/" target="_blank">
+            <svg width="14" height="14" style="color:var(--accent)"><use href="#icon-ig"/></svg>
+            @babyd_amg
+          </a>
+          <a class="handle-item" href="https://www.instagram.com/hitdent/" target="_blank">
+            <svg width="14" height="14" style="color:var(--accent)"><use href="#icon-ig"/></svg>
+            @hitdent
+          </a>
+          <a class="handle-item" href="https://www.instagram.com/innoutww/" target="_blank">
+            <svg width="14" height="14" style="color:var(--accent)"><use href="#icon-ig"/></svg>
+            @innoutww
+          </a>
+          <a class="handle-item" href="https://www.instagram.com/rikkithefool/" target="_blank">
+            <svg width="14" height="14" style="color:var(--accent)"><use href="#icon-ig"/></svg>
+            @rikkithefool
+          </a>
         </div>
       </div>
     </div>
