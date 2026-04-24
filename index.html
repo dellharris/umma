@@ -354,6 +354,117 @@
     .timeline-text strong { color: #fff; font-size: 0.9rem; }
     .timeline-text p { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
 
+    /* POST CARDS */
+    .post-card {
+      margin-top: 1.25rem;
+      background: #0d0d0d;
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .post-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-meta-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+    .post-num {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      padding-top: 2px;
+    }
+    .post-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .post-tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .post-tag {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .post-tag.trap { background: #1a0a2e; color: #c084fc; border: 1px solid #3b0764; }
+    .post-tag.collab { background: #0a1a2e; color: #60a5fa; border: 1px solid #1e3a5f; }
+    .post-tag.event { background: #1a1a0a; color: #fbbf24; border: 1px solid #3d3000; }
+    .post-details {
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-detail-row {
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+      font-size: 0.84rem;
+    }
+    .detail-label {
+      color: var(--muted);
+      min-width: 110px;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .detail-val {
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .caption-options-label {
+      padding: 0.75rem 1.25rem 0.4rem;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .caption-options {
+      padding: 0 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .caption-option {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+    .caption-option-tag {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .caption-option p {
+      font-size: 0.875rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
     /* REELS */
     .reel-list {
       margin-top: 1rem;
@@ -752,17 +863,76 @@
           <h2>Clips to Create</h2>
         </div>
         <p>Updated as the campaign develops. Each clip links back to the origin video.</p>
-        <div class="reel-list">
-          <div class="reel-item">
-            <div class="reel-num">
-              <svg width="13" height="13" style="color:var(--accent)"><use href="#icon-film"/></svg>
+
+        <!-- POST 1: DUN DEAL COLLAB -->
+        <div class="post-card">
+          <div class="post-card-header">
+            <div class="post-meta-left">
+              <div class="post-num">01</div>
+              <div>
+                <div class="post-title">Dun Deal x umma — 420 Short</div>
+                <div class="post-tags">
+                  <span class="post-tag trap">Trap</span>
+                  <span class="post-tag collab">Collab</span>
+                  <span class="post-tag event">420 Event</span>
+                </div>
+              </div>
             </div>
-            <div class="reel-info">
-              <div class="reel-title">Coming soon</div>
-              <div class="reel-meta">— sec · Type: —</div>
-            </div>
-            <div class="reel-status">Planned</div>
+            <div class="reel-status">Proposed</div>
           </div>
+
+          <div class="post-details">
+            <div class="post-detail-row">
+              <span class="detail-label">Collaborator</span>
+              <span class="detail-val">
+                Dun Deal
+                <a class="credit-handle" href="https://www.instagram.com/dundealonthetrak/" target="_blank">
+                  <svg width="11" height="11"><use href="#icon-ig"/></svg>
+                  @dundealonthetrak
+                </a>
+              </span>
+            </div>
+            <div class="post-detail-row">
+              <span class="detail-label">Role</span>
+              <span class="detail-val">Producer · Possible umma Ambassador</span>
+            </div>
+            <div class="post-detail-row">
+              <span class="detail-label">Song in post</span>
+              <span class="detail-val">"Stoner" — Young Thug (produced by Dun Deal)</span>
+            </div>
+            <div class="post-detail-row">
+              <span class="detail-label">Series</span>
+              <span class="detail-val">umma 420 Event promo — backyard cookout, jazz / hip-hop / house</span>
+            </div>
+            <div class="post-detail-row">
+              <span class="detail-label">Audience target</span>
+              <span class="detail-val">Trap — "Stoner" fanbase, Young Thug listeners, Dun Deal following</span>
+            </div>
+          </div>
+
+          <div class="caption-options-label">Caption Options</div>
+          <div class="caption-options">
+            <div class="caption-option">
+              <div class="caption-option-tag">A — Short &amp; punchy</div>
+              <p>"Stoner x umma. 4/20 cookout. @dundealonthetrak on the track. Pull up."</p>
+            </div>
+            <div class="caption-option">
+              <div class="caption-option-tag">B — Name drop</div>
+              <p>"@dundealonthetrak produced Stoner for Young Thug. Now he's building with @ummasonoma. 420 cookout — backyard, trap, jazz, house. Who sliding?"</p>
+            </div>
+            <div class="caption-option">
+              <div class="caption-option-tag">C — Ambassador angle</div>
+              <p>"The producer of Stoner linked with us. @dundealonthetrak x umma sonoma. 4/20 event dropping. Real ones know."</p>
+            </div>
+            <div class="caption-option">
+              <div class="caption-option-tag">D — Event forward</div>
+              <p>"420 cookout. Backyard. @dundealonthetrak in the building. If Stoner is your anthem — umma got the vibe. Details coming."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- POSTS 2–5: PLACEHOLDERS -->
+        <div class="reel-list">
           <div class="reel-item">
             <div class="reel-num">
               <svg width="13" height="13" style="color:var(--accent)"><use href="#icon-film"/></svg>
