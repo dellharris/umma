@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ATL Mural – Augmented</title>
+  <style>
+    :root { --accent: #ff6b35; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    }
+
+    #scene { position: relative; width: 100%; height: 100%; }
+
+    #mural {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+    }
+
+    /* AR overlay layer */
+    #ar-layer {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    #ar-layer.visible { opacity: 1; }
+
+    #smoke-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* Hand-rolled cigarette — sits at her raised fingers */
+    #cig-wrap {
+      position: absolute;
+      left: 30%;
+      top: 49%;
+      width: 5%;
+      min-width: 20px;
+      max-width: 40px;
+      transform: rotate(-38deg);
+      transform-origin: 50% 82%;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.5s;
+      filter: drop-shadow(0 0 5px rgba(255, 100, 30, 0.7));
+    }
+    #ar-layer.visible #cig-wrap { opacity: 1; }
+
+    /* --- UI chrome --- */
+    #ui { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+
+    #label {
+      position: absolute;
+      top: 28px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.8);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 10px rgba(0,0,0,1);
+      white-space: nowrap;
+    }
+
+    #hint {
+      position: absolute;
+      bottom: 108px; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: opacity 0.6s;
+    }
+    #hint.hidden { opacity: 0; pointer-events: none; }
+
+    #toggle {
+      position: absolute;
+      bottom: 48px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: auto;
+
+      background: rgba(8, 8, 8, 0.72);
+      border: 1.5px solid rgba(255,255,255,0.45);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 16px 40px;
+      border-radius: 60px;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    #toggle:active { transform: translateX(-50%) scale(0.96); }
+
+    #toggle.on {
+      background: rgba(255, 107, 53, 0.22);
+      border-color: var(--accent);
+      box-shadow: 0 0 24px rgba(255,107,53,0.4), inset 0 0 12px rgba(255,107,53,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<div id="scene">
+  <img id="mural" src="mural.jpg" alt="ATL Mural">
+
+  <div id="ar-layer">
+    <canvas id="smoke-canvas"></canvas>
+
+    <!-- Hand-rolled cigarette SVG -->
+    <div id="cig-wrap">
+      <svg viewBox="0 0 16 74" xmlns="http://www.w3.org/2000/svg">
+        <!-- Crutch / filter end -->
+        <rect x="4" y="56" width="8" height="16" rx="2.5" fill="#ecd9a8"/>
+        <rect x="5" y="56" width="3" height="16" fill="#d9c48c" opacity="0.5"/>
+        <line x1="8" y1="56" x2="8" y2="72" stroke="#c9b070" stroke-width="0.5" opacity="0.35"/>
+
+        <!-- Body — hand-rolled, slightly irregular -->
+        <path d="M4.8,13 Q4.2,34 4.8,56 L11.2,56 Q11.8,34 11.2,13 Z" fill="#cba882"/>
+        <!-- Paper seams -->
+        <line x1="8" y1="14" x2="8" y2="55" stroke="#ba9870" stroke-width="0.5" opacity="0.4"/>
+        <line x1="6.2" y1="18" x2="5.8" y2="52" stroke="#ba9870" stroke-width="0.3" opacity="0.25"/>
+
+        <!-- Twisted tip -->
+        <path d="M5.5,13 Q8,5.5 10.5,13" fill="#b89068" stroke="#a07850" stroke-width="0.3"/>
+        <path d="M6.8,11 Q8,5 9.2,11" fill="#a07848"/>
+        <path d="M7.5,8.5 Q8,5 8.5,8.5" stroke="#8a6030" stroke-width="0.6" fill="none"/>
+
+        <!-- Ember glow (layered) -->
+        <ellipse cx="8" cy="12" rx="4" ry="2.8" fill="#e83200" opacity="0.95"/>
+        <ellipse cx="8" cy="11.2" rx="3" ry="2" fill="#ff6600" opacity="0.9"/>
+        <ellipse cx="8" cy="10.5" rx="2" ry="1.4" fill="#ffaa00" opacity="0.75"/>
+        <ellipse cx="8" cy="10" rx="1.1" ry="0.9" fill="#ffe060" opacity="0.6"/>
+
+        <!-- Ash -->
+        <ellipse cx="8" cy="13.8" rx="3.2" ry="1.6" fill="#aaa" opacity="0.55"/>
+        <ellipse cx="7.5" cy="15" rx="2" ry="1" fill="#ccc" opacity="0.35"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div id="ui">
+  <div id="label">ATL Mural &nbsp;·&nbsp; Augmented Reality</div>
+  <div id="hint">tap to reveal</div>
+  <button id="toggle" onclick="toggleAR()">Augment</button>
+</div>
+
+<script>
+const canvas  = document.getElementById('smoke-canvas');
+const ctx     = canvas.getContext('2d');
+const arLayer = document.getElementById('ar-layer');
+const btn     = document.getElementById('toggle');
+const hint    = document.getElementById('hint');
+
+let isOn = false, animId = null, particles = [];
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* ── Smoke particle ── */
+class Puff {
+  constructor(x, y) {
+    this.x  = x + (Math.random() - 0.5) * 8;
+    this.y  = y;
+    this.vx = (Math.random() - 0.5) * 0.7;
+    this.vy = -(Math.random() * 1.4 + 0.5);
+    this.r  = Math.random() * 6 + 2.5;
+    this.life    = 0;
+    this.maxLife = Math.random() * 110 + 60;
+    this.hue = Math.random() * 50 + 185;   // blue-gray range
+    this.sat = Math.random() * 15 + 5;
+    this.lit = Math.random() * 25 + 58;
+    this.wobble  = Math.random() * 0.1 + 0.03;
+    this.wobbleO = Math.random() * Math.PI * 2;
+  }
+  tick() {
+    const t = this.life;
+    this.x  += this.vx + Math.sin(t * this.wobble + this.wobbleO) * 0.35;
+    this.vx += (Math.random() - 0.5) * 0.05;
+    this.y  += this.vy;
+    this.r  += 0.20;
+    this.life++;
+    this.alpha = Math.pow(1 - this.life / this.maxLife, 1.2) * 0.32;
+    return this.life < this.maxLife;
+  }
+  draw() {
+    const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    g.addColorStop(0, `hsla(${this.hue},${this.sat}%,${this.lit}%,${this.alpha})`);
+    g.addColorStop(1, `hsla(${this.hue},${this.sat}%,${this.lit}%,0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/* Locate the cigarette ember tip in screen coordinates after CSS rotation */
+function emberPoint() {
+  const el = document.getElementById('cig-wrap');
+  if (!el) return { x: canvas.width * 0.305, y: canvas.height * 0.45 };
+
+  const rect = el.getBoundingClientRect();
+  // Tip is at (50%, ~11%) of the SVG element, rotation-origin is (50%, 82%)
+  const tipX   = rect.left + rect.width * 0.50;
+  const tipY   = rect.top  + rect.height * 0.11;
+  const origX  = rect.left + rect.width * 0.50;
+  const origY  = rect.top  + rect.height * 0.82;
+
+  const ang = -38 * (Math.PI / 180);
+  const dx = tipX - origX, dy = tipY - origY;
+  return {
+    x: origX + dx * Math.cos(ang) - dy * Math.sin(ang),
+    y: origY + dx * Math.sin(ang) + dy * Math.cos(ang)
+  };
+}
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const pt = emberPoint();
+  const emit = Math.random() < 0.45 ? 2 : 1;
+  for (let i = 0; i < emit; i++) particles.push(new Puff(pt.x, pt.y));
+
+  // Thin wispy stream near the ember — constant thin line before puffs expand
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.strokeStyle = 'rgba(220,220,240,0.6)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(pt.x, pt.y);
+  ctx.bezierCurveTo(
+    pt.x - 2, pt.y - 18,
+    pt.x + 4, pt.y - 32,
+    pt.x - 1, pt.y - 44
+  );
+  ctx.stroke();
+  ctx.restore();
+
+  if (particles.length > 220) particles.splice(0, particles.length - 220);
+  particles = particles.filter(p => { const a = p.tick(); if (a) p.draw(); return a; });
+
+  animId = requestAnimationFrame(loop);
+}
+
+function toggleAR() {
+  isOn = !isOn;
+  if (isOn) {
+    arLayer.classList.add('visible');
+    btn.textContent = 'Remove';
+    btn.classList.add('on');
+    hint.classList.add('hidden');
+    loop();
+  } else {
+    arLayer.classList.remove('visible');
+    btn.textContent = 'Augment';
+    btn.classList.remove('on');
+    cancelAnimationFrame(animId); animId = null;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = [];
+  }
+}
+</script>
+</body>
+</html>
