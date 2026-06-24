@@ -41,16 +41,19 @@
     /* Hand-rolled cigarette — sits at her raised fingers */
     #cig-wrap {
       position: absolute;
-      left: 30%;
-      top: 49%;
-      width: 5%;
-      min-width: 20px;
-      max-width: 40px;
-      transform: rotate(-38deg);
-      transform-origin: 50% 82%;
+      left: 26%;
+      top: 38%;
+      width: 9%;
+      min-width: 60px;
+      max-width: 130px;
       opacity: 0;
       transition: opacity 0.8s ease 0.5s;
-      filter: drop-shadow(0 0 5px rgba(255, 100, 30, 0.7));
+      filter: drop-shadow(0 0 8px rgba(255, 100, 30, 0.85));
+    }
+    #cig-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
     #ar-layer.visible #cig-wrap { opacity: 1; }
 
@@ -122,35 +125,9 @@
   <div id="ar-layer">
     <canvas id="smoke-canvas"></canvas>
 
-    <!-- Hand-rolled cigarette SVG -->
+    <!-- Hand-rolled cigarette image -->
     <div id="cig-wrap">
-      <svg viewBox="0 0 16 74" xmlns="http://www.w3.org/2000/svg">
-        <!-- Crutch / filter end -->
-        <rect x="4" y="56" width="8" height="16" rx="2.5" fill="#ecd9a8"/>
-        <rect x="5" y="56" width="3" height="16" fill="#d9c48c" opacity="0.5"/>
-        <line x1="8" y1="56" x2="8" y2="72" stroke="#c9b070" stroke-width="0.5" opacity="0.35"/>
-
-        <!-- Body — hand-rolled, slightly irregular -->
-        <path d="M4.8,13 Q4.2,34 4.8,56 L11.2,56 Q11.8,34 11.2,13 Z" fill="#cba882"/>
-        <!-- Paper seams -->
-        <line x1="8" y1="14" x2="8" y2="55" stroke="#ba9870" stroke-width="0.5" opacity="0.4"/>
-        <line x1="6.2" y1="18" x2="5.8" y2="52" stroke="#ba9870" stroke-width="0.3" opacity="0.25"/>
-
-        <!-- Twisted tip -->
-        <path d="M5.5,13 Q8,5.5 10.5,13" fill="#b89068" stroke="#a07850" stroke-width="0.3"/>
-        <path d="M6.8,11 Q8,5 9.2,11" fill="#a07848"/>
-        <path d="M7.5,8.5 Q8,5 8.5,8.5" stroke="#8a6030" stroke-width="0.6" fill="none"/>
-
-        <!-- Ember glow (layered) -->
-        <ellipse cx="8" cy="12" rx="4" ry="2.8" fill="#e83200" opacity="0.95"/>
-        <ellipse cx="8" cy="11.2" rx="3" ry="2" fill="#ff6600" opacity="0.9"/>
-        <ellipse cx="8" cy="10.5" rx="2" ry="1.4" fill="#ffaa00" opacity="0.75"/>
-        <ellipse cx="8" cy="10" rx="1.1" ry="0.9" fill="#ffe060" opacity="0.6"/>
-
-        <!-- Ash -->
-        <ellipse cx="8" cy="13.8" rx="3.2" ry="1.6" fill="#aaa" opacity="0.55"/>
-        <ellipse cx="7.5" cy="15" rx="2" ry="1" fill="#ccc" opacity="0.35"/>
-      </svg>
+      <img src="cig.png" alt="">
     </div>
   </div>
 </div>
@@ -220,17 +197,10 @@ function emberPoint() {
   if (!el) return { x: canvas.width * 0.305, y: canvas.height * 0.45 };
 
   const rect = el.getBoundingClientRect();
-  // Tip is at (50%, ~11%) of the SVG element, rotation-origin is (50%, 82%)
-  const tipX   = rect.left + rect.width * 0.50;
-  const tipY   = rect.top  + rect.height * 0.11;
-  const origX  = rect.left + rect.width * 0.50;
-  const origY  = rect.top  + rect.height * 0.82;
-
-  const ang = -38 * (Math.PI / 180);
-  const dx = tipX - origX, dy = tipY - origY;
+  // Lit/twisted end is at the top-left of the PNG (~10% x, ~8% y)
   return {
-    x: origX + dx * Math.cos(ang) - dy * Math.sin(ang),
-    y: origY + dx * Math.sin(ang) + dy * Math.cos(ang)
+    x: rect.left + rect.width  * 0.10,
+    y: rect.top  + rect.height * 0.08
   };
 }
 
