@@ -38,22 +38,23 @@
       width: 100%; height: 100%;
     }
 
-    /* Hand-rolled cigarette — sits at her raised fingers */
+    /* Hand-rolled cigarette — sits between her raised fingers */
     #cig-wrap {
       position: absolute;
-      left: 26%;
-      top: 38%;
-      width: 9%;
-      min-width: 60px;
-      max-width: 130px;
+      left: 62%;
+      top: 30%;
+      width: 7%;
+      min-width: 50px;
+      max-width: 110px;
+      transform: rotate(10deg);
       opacity: 0;
       transition: opacity 0.8s ease 0.5s;
-      filter: drop-shadow(0 0 8px rgba(255, 100, 30, 0.85));
     }
     #cig-wrap img {
       width: 100%;
       height: auto;
       display: block;
+      mix-blend-mode: multiply;
     }
     #ar-layer.visible #cig-wrap { opacity: 1; }
 
@@ -154,30 +155,31 @@ function resize() {
 resize();
 window.addEventListener('resize', resize);
 
-/* ── Smoke particle ── */
+/* ── Smoke particle — blown from mouth ── */
 class Puff {
   constructor(x, y) {
-    this.x  = x + (Math.random() - 0.5) * 8;
-    this.y  = y;
-    this.vx = (Math.random() - 0.5) * 0.7;
-    this.vy = -(Math.random() * 1.4 + 0.5);
-    this.r  = Math.random() * 6 + 2.5;
+    this.x  = x + (Math.random() - 0.5) * 12;
+    this.y  = y + (Math.random() - 0.5) * 6;
+    this.vx = (Math.random() - 0.3) * 1.2;   // slight drift left (she faces left)
+    this.vy = -(Math.random() * 1.8 + 0.8);   // upward
+    this.r  = Math.random() * 10 + 6;          // bigger puffs — mouth-blown
     this.life    = 0;
-    this.maxLife = Math.random() * 110 + 60;
-    this.hue = Math.random() * 50 + 185;   // blue-gray range
-    this.sat = Math.random() * 15 + 5;
-    this.lit = Math.random() * 25 + 58;
-    this.wobble  = Math.random() * 0.1 + 0.03;
+    this.maxLife = Math.random() * 130 + 80;
+    this.hue = Math.random() * 30 + 195;
+    this.sat = Math.random() * 12 + 3;
+    this.lit = Math.random() * 20 + 62;
+    this.wobble  = Math.random() * 0.08 + 0.02;
     this.wobbleO = Math.random() * Math.PI * 2;
   }
   tick() {
     const t = this.life;
-    this.x  += this.vx + Math.sin(t * this.wobble + this.wobbleO) * 0.35;
-    this.vx += (Math.random() - 0.5) * 0.05;
+    this.x  += this.vx + Math.sin(t * this.wobble + this.wobbleO) * 0.5;
+    this.vx += (Math.random() - 0.5) * 0.04;
     this.y  += this.vy;
-    this.r  += 0.20;
+    this.vy *= 0.995;
+    this.r  += 0.28;
     this.life++;
-    this.alpha = Math.pow(1 - this.life / this.maxLife, 1.2) * 0.32;
+    this.alpha = Math.pow(1 - this.life / this.maxLife, 1.1) * 0.38;
     return this.life < this.maxLife;
   }
   draw() {
@@ -191,42 +193,22 @@ class Puff {
   }
 }
 
-/* Locate the cigarette ember tip in screen coordinates after CSS rotation */
-function emberPoint() {
-  const el = document.getElementById('cig-wrap');
-  if (!el) return { x: canvas.width * 0.305, y: canvas.height * 0.45 };
-
-  const rect = el.getBoundingClientRect();
-  // Lit/twisted end is at the top-left of the PNG (~10% x, ~8% y)
+/* Smoke origin — her mouth/lips in the mural */
+function mouthPoint() {
   return {
-    x: rect.left + rect.width  * 0.10,
-    y: rect.top  + rect.height * 0.08
+    x: canvas.width  * 0.47,
+    y: canvas.height * 0.54
   };
 }
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const pt = emberPoint();
-  const emit = Math.random() < 0.45 ? 2 : 1;
+  const pt = mouthPoint();
+  const emit = Math.random() < 0.5 ? 2 : 1;
   for (let i = 0; i < emit; i++) particles.push(new Puff(pt.x, pt.y));
 
-  // Thin wispy stream near the ember — constant thin line before puffs expand
-  ctx.save();
-  ctx.globalAlpha = 0.18;
-  ctx.strokeStyle = 'rgba(220,220,240,0.6)';
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(pt.x, pt.y);
-  ctx.bezierCurveTo(
-    pt.x - 2, pt.y - 18,
-    pt.x + 4, pt.y - 32,
-    pt.x - 1, pt.y - 44
-  );
-  ctx.stroke();
-  ctx.restore();
-
-  if (particles.length > 220) particles.splice(0, particles.length - 220);
+  if (particles.length > 280) particles.splice(0, particles.length - 280);
   particles = particles.filter(p => { const a = p.tick(); if (a) p.draw(); return a; });
 
   animId = requestAnimationFrame(loop);
