@@ -41,9 +41,9 @@
     #cig-wrap {
       position: absolute;
       top: 0; left: 0;
-      width: 15%;
-      min-width: 80px;
-      max-width: 180px;
+      width: 18%;
+      min-width: 90px;
+      max-width: 200px;
       opacity: 0;
       transition: opacity 0.8s ease 0.5s;
       pointer-events: none;
@@ -197,8 +197,8 @@ const hint    = document.getElementById('hint');
 let isOn = false, animId = null, particles = [];
 
 // Calibrated coords adjusted for object-position: 15% 15% crop shift
-const MOUTH_X = 0.50,  MOUTH_Y = 0.455;
-const HAND_X  = 0.20,  HAND_Y  = 0.56;
+const MOUTH_X = 0.44,  MOUTH_Y = 0.58;
+const HAND_X  = 0.19,  HAND_Y  = 0.63;
 
 function resize() {
   canvas.width  = window.innerWidth;
