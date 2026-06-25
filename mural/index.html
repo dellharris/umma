@@ -203,10 +203,14 @@ const HAND_X  = 0.107, HAND_Y  = 0.507;
 function resize() {
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
-  cigWrap.style.left = Math.round(window.innerWidth  * HAND_X) + 'px';
-  cigWrap.style.top  = Math.round(window.innerHeight * HAND_Y) + 'px';
+  // Place BOTTOM-RIGHT of cig at hand coords (held end = bottom-right of the diagonal PNG)
+  const w = cigWrap.offsetWidth  || Math.min(Math.max(window.innerWidth * 0.10, 55), 120);
+  const h = cigWrap.offsetHeight || w;
+  cigWrap.style.left = Math.round(window.innerWidth  * HAND_X - w) + 'px';
+  cigWrap.style.top  = Math.round(window.innerHeight * HAND_Y - h) + 'px';
 }
 resize();
+document.querySelector('#cig-wrap img').addEventListener('load', resize);
 window.addEventListener('resize', resize);
 
 /* ── Smoke — deep blue + black shadows, matches mural palette ── */
@@ -214,7 +218,7 @@ class Puff {
   constructor(x, y) {
     this.x  = x + (Math.random() - 0.5) * 14;
     this.y  = y + (Math.random() - 0.5) * 8;
-    this.vx = (Math.random() - 0.35) * 1.4;
+    this.vx = -(Math.random() * 1.2 + 0.4);  // always leftward
     this.vy = -(Math.random() * 2.0 + 0.9);
     this.r  = Math.random() * 12 + 7;
     this.life    = 0;
