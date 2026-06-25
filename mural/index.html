@@ -41,9 +41,9 @@
     #cig-wrap {
       position: absolute;
       top: 0; left: 0;
-      width: 10%;
-      min-width: 55px;
-      max-width: 120px;
+      width: 15%;
+      min-width: 80px;
+      max-width: 180px;
       opacity: 0;
       transition: opacity 0.8s ease 0.5s;
       pointer-events: none;
@@ -198,7 +198,7 @@ let isOn = false, animId = null, particles = [];
 
 // Calibrated from device tap: MOUTH 41.5,45.5 | HAND 10.7,50.7
 const MOUTH_X = 0.415, MOUTH_Y = 0.455;
-const HAND_X  = 0.107, HAND_Y  = 0.507;
+const HAND_X  = 0.107, HAND_Y  = 0.56;
 
 function resize() {
   canvas.width  = window.innerWidth;
