@@ -20,7 +20,7 @@
     #mural {
       width: 100%; height: 100%;
       object-fit: cover;
-      object-position: center 15%;
+      object-position: 15% 15%;
       display: block;
     }
 
@@ -196,18 +196,18 @@ const hint    = document.getElementById('hint');
 
 let isOn = false, animId = null, particles = [];
 
-// Calibrated from device tap: MOUTH 41.5,45.5 | HAND 10.7,50.7
-const MOUTH_X = 0.415, MOUTH_Y = 0.455;
-const HAND_X  = 0.107, HAND_Y  = 0.56;
+// Calibrated coords adjusted for object-position: 15% 15% crop shift
+const MOUTH_X = 0.50,  MOUTH_Y = 0.455;
+const HAND_X  = 0.20,  HAND_Y  = 0.56;
 
 function resize() {
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
-  // Place BOTTOM-RIGHT of cig at hand coords (held end = bottom-right of the diagonal PNG)
-  const w = cigWrap.offsetWidth  || Math.min(Math.max(window.innerWidth * 0.10, 55), 120);
+  // Center the cig element on the hand coords
+  const w = cigWrap.offsetWidth  || Math.min(Math.max(window.innerWidth * 0.15, 80), 180);
   const h = cigWrap.offsetHeight || w;
-  cigWrap.style.left = Math.round(window.innerWidth  * HAND_X - w) + 'px';
-  cigWrap.style.top  = Math.round(window.innerHeight * HAND_Y - h) + 'px';
+  cigWrap.style.left = Math.round(window.innerWidth  * HAND_X - w / 2) + 'px';
+  cigWrap.style.top  = Math.round(window.innerHeight * HAND_Y - h / 2) + 'px';
 }
 resize();
 document.querySelector('#cig-wrap img').addEventListener('load', resize);
