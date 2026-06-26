@@ -220,51 +220,58 @@ resize();
 document.querySelector('#cig-wrap img').addEventListener('load', resize);
 window.addEventListener('resize', resize);
 
-/* ── Smoke — deep blue + black shadows, matches mural palette ── */
+/* ── Smoke — wispy elongated puffs that augment the painted smoke ── */
 class Puff {
   constructor(x, y) {
-    this.x  = x + (Math.random() - 0.5) * 14;
-    this.y  = y + (Math.random() - 0.5) * 8;
-    this.vx = -(Math.random() * 0.3 + 0.1);   // slow leftward drift
-    this.vy = -(Math.random() * 0.45 + 0.15); // slow upward rise
-    this.r  = Math.random() * 12 + 7;          // big puffs like before
+    this.x  = x + (Math.random() - 0.5) * 10;
+    this.y  = y + (Math.random() - 0.5) * 6;
+    // Flow primarily LEFT with slight upward drift — follows painted smoke path
+    this.vx = -(Math.random() * 0.55 + 0.25);
+    this.vy = -(Math.random() * 0.20 + 0.04);
+    // Start small, grow into wide wisps
+    this.r       = Math.random() * 4 + 2;
+    this.stretch = Math.random() * 1.8 + 2.2; // 2.2–4x wider than tall
     this.life    = 0;
-    this.maxLife = Math.random() * 220 + 150;  // long life
-    this.wobble  = Math.random() * 0.07 + 0.02;
+    this.maxLife = Math.random() * 260 + 160;
+    this.wobble  = Math.random() * 0.025 + 0.008;
     this.wobbleO = Math.random() * Math.PI * 2;
 
-    const isShadow = Math.random() < 0.35;
+    const isShadow = Math.random() < 0.28;
     if (isShadow) {
       this.hue = 220 + Math.random() * 20;
-      this.sat = 20 + Math.random() * 20;
-      this.lit = 8 + Math.random() * 12;
-      this.maxAlpha = 0.55;
+      this.sat = 18 + Math.random() * 18;
+      this.lit = 6  + Math.random() * 10;
+      this.maxAlpha = 0.30;
     } else {
       this.hue = 210 + Math.random() * 30;
-      this.sat = 55 + Math.random() * 30;
-      this.lit = 28 + Math.random() * 22;
-      this.maxAlpha = 0.42;
+      this.sat = 50  + Math.random() * 28;
+      this.lit = 25  + Math.random() * 20;
+      this.maxAlpha = 0.22; // light touch — augmenting painted smoke, not replacing it
     }
   }
   tick() {
-    this.x += this.vx + Math.sin(this.life * this.wobble + this.wobbleO) * 0.15;
-    this.vx += (Math.random() - 0.5) * 0.008;
+    this.x += this.vx + Math.sin(this.life * this.wobble + this.wobbleO) * 0.12;
+    this.vx *= 0.9995;
     this.y  += this.vy;
-    this.vy *= 0.998;
-    this.r  += 0.35;  // expand fast like original so it spreads wide
+    this.vy *= 0.999;
+    this.r  += 0.28;
     this.life++;
-    this.alpha = Math.pow(1 - this.life / this.maxLife, 1.1) * this.maxAlpha;
+    this.alpha = Math.pow(1 - this.life / this.maxLife, 1.15) * this.maxAlpha;
     return this.life < this.maxLife;
   }
   draw() {
-    const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.scale(this.stretch, 1); // horizontally elongated = wispy, not circular
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, this.r);
     g.addColorStop(0,   `hsla(${this.hue},${this.sat}%,${this.lit}%,${this.alpha})`);
-    g.addColorStop(0.6, `hsla(${this.hue},${this.sat}%,${this.lit}%,${this.alpha * 0.5})`);
+    g.addColorStop(0.5, `hsla(${this.hue},${this.sat}%,${this.lit}%,${this.alpha * 0.45})`);
     g.addColorStop(1,   `hsla(${this.hue},${this.sat}%,${this.lit}%,0)`);
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.arc(0, 0, this.r, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
   }
 }
 
