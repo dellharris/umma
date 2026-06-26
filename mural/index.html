@@ -48,7 +48,14 @@
       transition: opacity 0.8s ease 0.5s;
       pointer-events: none;
     }
-    #cig-wrap img { width: 100%; height: auto; display: block; }
+    #cig-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      /* Fade out the held/grip end so it looks tucked behind her fingers */
+      -webkit-mask-image: linear-gradient(135deg, black 42%, rgba(0,0,0,0.6) 58%, transparent 75%);
+      mask-image:         linear-gradient(135deg, black 42%, rgba(0,0,0,0.6) 58%, transparent 75%);
+    }
     #cig-wrap.visible { opacity: 1; }
 
     /* --- UI chrome --- */
