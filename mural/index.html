@@ -278,8 +278,8 @@ function mouthPoint() {
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const pt = mouthPoint();
-  const emit = Math.random() < 0.5 ? 2 : 1;
-  for (let i = 0; i < emit; i++) particles.push(new Puff(pt.x, pt.y));
+  const emit = Math.random() < 0.18 ? 1 : 0;
+  if (emit) particles.push(new Puff(pt.x, pt.y));
   if (particles.length > 300) particles.splice(0, particles.length - 300);
   particles = particles.filter(p => { const a = p.tick(); if (a) p.draw(); return a; });
   animId = requestAnimationFrame(loop);
