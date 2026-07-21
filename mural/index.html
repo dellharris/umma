@@ -292,9 +292,12 @@
       height: 100%;
     }
     .photo-drop-icon {
-      font-size: 24px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       line-height: 1;
+    }
+    .photo-drop-icon svg {
+      display: block;
+      margin: 0 auto;
     }
     .photo-drop-label {
       font-size: 12px;
@@ -507,7 +510,7 @@
   <!-- Scroll nudge -->
   <div id="scroll-nudge">
     <div class="nudge-line"></div>
-    <div class="nudge-label">Drop Your Shot</div>
+    <div class="nudge-label">Drop Your Shot &nbsp;&#8595;</div>
   </div>
 </div>
 
@@ -527,7 +530,13 @@
 
       <div id="photo-drop">
         <input type="file" accept="image/*" id="photo-input">
-        <div class="photo-drop-icon">📸</div>
+        <div class="photo-drop-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="15" rx="2"/>
+            <circle cx="12" cy="12.5" r="3.5"/>
+            <path d="M7 5l1.5-2h7L17 5"/>
+          </svg>
+        </div>
         <div class="photo-drop-label">Tap to add photo</div>
       </div>
 
@@ -535,7 +544,7 @@
     </div>
 
     <div id="thread-feed">
-      <div id="thread-empty">Be the first to drop your shot 📸</div>
+      <div id="thread-empty">Be the first to drop your shot &nbsp;&#9651;</div>
     </div>
   </div>
 </section>
