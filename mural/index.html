@@ -659,6 +659,26 @@ function toggleAR() {
 
 // ── THREAD ───────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQN97cMBM1MDOg3uXOfpQq39MKw7En7AJCjcvwOblWGmuge7J7uEBPAPiOcRmdWQbndg/exec';
+const LS_KEY = 'mural_posts_v1';
+
+// Posts are always read from / written to localStorage first.
+// Server data is merged in when it arrives — server wins for de-dup by timestamp.
+function localPosts() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; }
+}
+function savePosts(posts) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(posts.slice(0, 100))); } catch {}
+}
+function mergePosts(local, server) {
+  const seen = new Set();
+  const all  = [...server, ...local];
+  return all.filter(p => {
+    const key = (p.name || '') + '|' + (p.timestamp || p.time || '');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => new Date(b.timestamp || b.time) - new Date(a.timestamp || a.time));
+}
 
 let selectedDataUrl = '';
 
@@ -746,17 +766,25 @@ function renderPost(p) {
   </div>`;
 }
 
+function renderFeed(posts) {
+  const feed  = document.getElementById('thread-feed');
+  const empty = document.getElementById('thread-empty');
+  if (!posts.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  feed.innerHTML = posts.map(renderPost).join('');
+}
+
 async function loadPosts() {
+  // Always render local posts immediately
+  renderFeed(localPosts());
+
   try {
-    const res  = await fetch(APPS_SCRIPT_URL);
-    const data = await res.json();
-    const posts = data.filter(p => p.source === 'mural');
-    const feed  = document.getElementById('thread-feed');
-    const empty = document.getElementById('thread-empty');
-    if (!posts.length) { empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
-    const html = posts.map(renderPost).join('');
-    if (feed.innerHTML !== html) feed.innerHTML = html;
+    const res    = await fetch(APPS_SCRIPT_URL);
+    const data   = await res.json();
+    const server = data.filter(p => p.source === 'mural');
+    const merged = mergePosts(localPosts(), server);
+    savePosts(merged);
+    renderFeed(merged);
   } catch (e) {}
 }
 
@@ -778,28 +806,33 @@ document.getElementById('thread-post').addEventListener('click', async () => {
   postBtn.disabled = true;
   postBtn.textContent = 'Posting…';
 
-  // Optimistic render
-  const feed = document.getElementById('thread-feed');
-  document.getElementById('thread-empty').style.display = 'none';
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = renderPost({ name: handle, media: selectedDataUrl, time: Date.now() });
-  feed.insertBefore(tempDiv.firstChild, feed.firstChild);
+  const newPost = {
+    name: handle,
+    media: selectedDataUrl,
+    source: 'mural',
+    timestamp: new Date().toISOString(),
+    time: Date.now()
+  };
 
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        type: 'comment',
-        source: 'mural',
-        name: handle,
-        text: '',
-        media: selectedDataUrl,
-        timestamp: new Date().toISOString()
-      })
-    });
-  } catch (e) {}
+  // Save locally first — survives any network failure
+  const updated = [newPost, ...localPosts()];
+  savePosts(updated);
+  renderFeed(updated);
+
+  // Fire and forget to server
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({
+      type: 'comment',
+      source: 'mural',
+      name: handle,
+      text: '',
+      media: selectedDataUrl,
+      timestamp: newPost.timestamp
+    })
+  }).catch(() => {});
 
   // Reset form
   document.getElementById('handle-input').value = '';
@@ -810,8 +843,6 @@ document.getElementById('thread-post').addEventListener('click', async () => {
   document.getElementById('photo-input').value = '';
   postBtn.disabled = false;
   postBtn.textContent = 'Post';
-
-  setTimeout(loadPosts, 2000);
 });
 
 // IG handle input validation styling
