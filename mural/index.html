@@ -8,14 +8,22 @@
     :root { --accent: #ff6b35; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
+    html {
+      width: 100%;
+      background: #000;
+    }
+    body {
+      width: 100%;
+      overflow-x: hidden;
       background: #000;
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
     }
 
-    #scene { position: relative; width: 100%; height: 100%; }
+    #scene {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+    }
 
     #mural {
       width: 100%; height: 100%;
@@ -37,7 +45,6 @@
       width: 100%; height: 100%;
     }
 
-    /* Positioned via JS using window.innerWidth/Height — same system as canvas */
     #cig-wrap {
       position: absolute;
       top: 0; left: 0;
@@ -52,14 +59,13 @@
       width: 100%;
       height: auto;
       display: block;
-      /* Hard cutoff at finger grip — no fade */
       -webkit-mask-image: linear-gradient(135deg, black 72%, transparent 73%);
       mask-image:         linear-gradient(135deg, black 72%, transparent 73%);
     }
     #cig-wrap.visible { opacity: 1; }
 
     /* --- UI chrome --- */
-    #ui { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+    #ui { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
 
     #label {
       position: absolute;
@@ -157,7 +163,7 @@
 
     /* --- Gallery strip --- */
     #gallery-strip {
-      position: fixed;
+      position: absolute;
       bottom: 0; left: 0; right: 0;
       z-index: 40;
       padding: 12px 12px 20px;
@@ -208,10 +214,248 @@
     }
     #gallery-link:active { opacity: 0.6; }
     #gallery-link svg { flex-shrink: 0; }
+
+    /* ── THREAD SECTION ── */
+    #thread-section {
+      background: #0a0a0a;
+      padding: 56px 20px 80px;
+      border-top: 1px solid rgba(255,107,53,0.15);
+    }
+    #thread-inner {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .thread-heading {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .thread-sub {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,107,53,0.7);
+      margin-bottom: 32px;
+    }
+
+    /* Compose box */
+    #thread-compose {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 32px;
+    }
+
+    #handle-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 6px 0 12px;
+      outline: none;
+      margin-bottom: 14px;
+      letter-spacing: 0.02em;
+    }
+    #handle-input::placeholder { color: rgba(255,255,255,0.25); }
+    #handle-input:focus { border-bottom-color: var(--accent); }
+
+    /* Photo upload area */
+    #photo-drop {
+      border: 1.5px dashed rgba(255,255,255,0.14);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    #photo-drop:hover, #photo-drop.drag-over {
+      border-color: var(--accent);
+      background: rgba(255,107,53,0.05);
+    }
+    #photo-drop input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .photo-drop-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+    .photo-drop-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Preview */
+    #photo-preview {
+      display: none;
+      position: relative;
+      margin-bottom: 14px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #preview-img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+    #remove-photo {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    #thread-post {
+      width: 100%;
+      padding: 15px;
+      background: var(--accent);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #thread-post:active { transform: scale(0.97); }
+    #thread-post:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* Feed */
+    #thread-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    #thread-empty {
+      text-align: center;
+      padding: 40px 0;
+      font-size: 14px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.05em;
+    }
+
+    .post-card {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .post-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0;
+    }
+    .post-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .post-handle {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .post-photo {
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #111;
+    }
+    .post-photo img {
+      width: 100%;
+      display: block;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .post-time {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin-top: 8px;
+    }
+
+    /* scroll-down nudge on the scene */
+    #scroll-nudge {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+      z-index: 45;
+      opacity: 0;
+      animation: nudgeFade 1s ease 2s forwards;
+    }
+    @keyframes nudgeFade { to { opacity: 1; } }
+    .nudge-line {
+      width: 1px;
+      height: 28px;
+      background: linear-gradient(to bottom, rgba(255,107,53,0.7), transparent);
+      animation: nudgePulse 2s ease-in-out infinite;
+    }
+    .nudge-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,107,53,0.6);
+      white-space: nowrap;
+    }
+    @keyframes nudgePulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
   </style>
 </head>
 <body>
 
+<!-- ── FULL SCREEN AR SCENE ── -->
 <div id="scene">
   <img id="mural" src="mural.jpg" alt="ATL Mural">
 
@@ -222,46 +466,82 @@
   <div id="ar-layer">
     <canvas id="smoke-canvas"></canvas>
   </div>
-</div>
 
-<div id="ui">
-  <div id="label">ATL Mural &nbsp;·&nbsp; Augmented Reality</div>
-  <div id="hint">tap to reveal</div>
+  <div id="ui">
+    <div id="label">ATL Mural &nbsp;·&nbsp; Augmented Reality</div>
+    <div id="hint">tap to reveal</div>
 
-  <div id="links">
-    <a class="link-btn site" href="https://ummasonoma.com" target="_blank" rel="noopener">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      UMMA Sonoma
-    </a>
-    <a class="link-btn ig" href="https://www.instagram.com/ummasonoma" target="_blank" rel="noopener">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-      Follow @ummasonoma
-    </a>
-    <a class="link-btn ig" href="https://www.instagram.com/arrrtaddict" target="_blank" rel="noopener">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-      Follow @arrrtaddict
+    <div id="links">
+      <a class="link-btn site" href="https://ummasonoma.com" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        UMMA Sonoma
+      </a>
+      <a class="link-btn ig" href="https://www.instagram.com/ummasonoma" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        Follow @ummasonoma
+      </a>
+      <a class="link-btn ig" href="https://www.instagram.com/arrrtaddict" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        Follow @arrrtaddict
+      </a>
+    </div>
+
+    <button id="toggle" onclick="toggleAR()">Augment</button>
+  </div>
+
+  <!-- Gallery strip — inside scene, above thread -->
+  <div id="gallery-strip">
+    <div id="gallery-thumbs">
+      <div class="g-thumb"><img src="gallery-1.jpg" alt=""></div>
+      <div class="g-thumb"><img src="gallery-2.jpg" alt=""></div>
+      <div class="g-thumb"><img src="gallery-3.jpg" alt=""></div>
+      <div class="g-thumb"><img src="gallery-4.jpg" alt=""></div>
+      <div class="g-thumb"><img src="gallery-5.jpg" alt=""></div>
+    </div>
+    <a id="gallery-link" href="https://events.innoutww.com/worldcup-gallery/" target="_blank" rel="noopener">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      View Full Gallery
     </a>
   </div>
 
-  <button id="toggle" onclick="toggleAR()">Augment</button>
+  <!-- Scroll nudge -->
+  <div id="scroll-nudge">
+    <div class="nudge-line"></div>
+    <div class="nudge-label">Drop Your Shot</div>
+  </div>
 </div>
 
-<!-- Gallery strip -->
-<div id="gallery-strip">
-  <div id="gallery-thumbs">
-    <div class="g-thumb"><img src="gallery-1.jpg" alt=""></div>
-    <div class="g-thumb"><img src="gallery-2.jpg" alt=""></div>
-    <div class="g-thumb"><img src="gallery-3.jpg" alt=""></div>
-    <div class="g-thumb"><img src="gallery-4.jpg" alt=""></div>
-    <div class="g-thumb"><img src="gallery-5.jpg" alt=""></div>
+<!-- ── COMMUNITY THREAD ── -->
+<section id="thread-section">
+  <div id="thread-inner">
+    <h2 class="thread-heading">Drop Your Shot</h2>
+    <p class="thread-sub">Post your photo · Tag your IG</p>
+
+    <div id="thread-compose">
+      <input id="handle-input" type="text" placeholder="@yourhandle" maxlength="32" autocomplete="off" autocorrect="off" spellcheck="false">
+
+      <div id="photo-preview">
+        <img id="preview-img" src="" alt="">
+        <button id="remove-photo" type="button">×</button>
+      </div>
+
+      <div id="photo-drop">
+        <input type="file" accept="image/*" id="photo-input">
+        <div class="photo-drop-icon">📸</div>
+        <div class="photo-drop-label">Tap to add photo</div>
+      </div>
+
+      <button id="thread-post" type="button">Post</button>
+    </div>
+
+    <div id="thread-feed">
+      <div id="thread-empty">Be the first to drop your shot 📸</div>
+    </div>
   </div>
-  <a id="gallery-link" href="https://events.innoutww.com/worldcup-gallery/" target="_blank" rel="noopener">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    View Full Gallery
-  </a>
-</div>
+</section>
 
 <script>
+// ── AR ENGINE ─────────────────────────────────────────────
 const canvas  = document.getElementById('smoke-canvas');
 const ctx     = canvas.getContext('2d');
 const arLayer = document.getElementById('ar-layer');
@@ -272,14 +552,12 @@ const hint    = document.getElementById('hint');
 
 let isOn = false, animId = null, particles = [];
 
-// Calibrated from device tap: MOUTH 54.5,46.1 | HAND 16.9,53.2
 const MOUTH_X = 0.545, MOUTH_Y = 0.461;
 const HAND_X  = 0.169, HAND_Y  = 0.532;
 
 function resize() {
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
-  // Center the cig element on the hand coords
   const w = cigWrap.offsetWidth  || Math.min(Math.max(window.innerWidth * 0.15, 80), 180);
   const h = cigWrap.offsetHeight || w;
   cigWrap.style.left = Math.round(window.innerWidth  * HAND_X - w / 2) + 'px';
@@ -289,19 +567,17 @@ resize();
 document.querySelector('#cig-wrap img').addEventListener('load', resize);
 window.addEventListener('resize', resize);
 
-/* ── Smoke — deep blue + black shadows, matches mural palette ── */
 class Puff {
   constructor(x, y) {
     this.x  = x + (Math.random() - 0.5) * 14;
     this.y  = y + (Math.random() - 0.5) * 8;
-    this.vx = -(Math.random() * 0.6 + 0.2);   // half speed leftward
-    this.vy = -(Math.random() * 1.0 + 0.45);  // half speed upward
+    this.vx = -(Math.random() * 0.6 + 0.2);
+    this.vy = -(Math.random() * 1.0 + 0.45);
     this.r  = Math.random() * 12 + 7;
     this.life    = 0;
-    this.maxLife = Math.random() * 200 + 130;  // longer life so it travels far
+    this.maxLife = Math.random() * 200 + 130;
     this.wobble  = Math.random() * 0.07 + 0.02;
     this.wobbleO = Math.random() * Math.PI * 2;
-
     const isShadow = Math.random() < 0.35;
     if (isShadow) {
       this.hue = 220 + Math.random() * 20;
@@ -338,17 +614,13 @@ class Puff {
 }
 
 function mouthPoint() {
-  return {
-    x: canvas.width  * MOUTH_X,
-    y: canvas.height * MOUTH_Y
-  };
+  return { x: canvas.width * MOUTH_X, y: canvas.height * MOUTH_Y };
 }
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const pt = mouthPoint();
-  const emit = Math.random() < 0.18 ? 1 : 0;
-  if (emit) particles.push(new Puff(pt.x, pt.y));
+  if (Math.random() < 0.18) particles.push(new Puff(pt.x, pt.y));
   if (particles.length > 300) particles.splice(0, particles.length - 300);
   particles = particles.filter(p => { const a = p.tick(); if (a) p.draw(); return a; });
   animId = requestAnimationFrame(loop);
@@ -375,6 +647,171 @@ function toggleAR() {
     particles = [];
   }
 }
+
+// ── THREAD ───────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQN97cMBM1MDOg3uXOfpQq39MKw7En7AJCjcvwOblWGmuge7J7uEBPAPiOcRmdWQbndg/exec';
+
+let selectedDataUrl = '';
+
+// Resize image to max 400px, JPEG 65% — keeps base64 under ~25KB
+function resizeImage(file, cb) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 400;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const cvs = document.createElement('canvas');
+      cvs.width = w; cvs.height = h;
+      cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(cvs.toDataURL('image/jpeg', 0.65));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('photo-input').addEventListener('change', function() {
+  if (!this.files[0]) return;
+  resizeImage(this.files[0], dataUrl => {
+    selectedDataUrl = dataUrl;
+    document.getElementById('preview-img').src = dataUrl;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('photo-drop').style.display = 'none';
+  });
+});
+
+// Drag and drop
+const dropEl = document.getElementById('photo-drop');
+dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('drag-over'); });
+dropEl.addEventListener('dragleave', () => dropEl.classList.remove('drag-over'));
+dropEl.addEventListener('drop', e => {
+  e.preventDefault();
+  dropEl.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    resizeImage(file, dataUrl => {
+      selectedDataUrl = dataUrl;
+      document.getElementById('preview-img').src = dataUrl;
+      document.getElementById('photo-preview').style.display = 'block';
+      dropEl.style.display = 'none';
+    });
+  }
+});
+
+document.getElementById('remove-photo').addEventListener('click', () => {
+  selectedDataUrl = '';
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('preview-img').src = '';
+  document.getElementById('photo-drop').style.display = 'block';
+  document.getElementById('photo-input').value = '';
+});
+
+function avatarInitial(handle) {
+  const h = handle.replace(/^@/, '');
+  return h[0] ? h[0].toUpperCase() : '?';
+}
+
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - new Date(Number(ts) || ts).getTime()) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+
+function renderPost(p) {
+  const handle = p.name || p.handle || '?';
+  const photoHTML = p.media
+    ? `<div class="post-photo"><img src="${p.media}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+    : '';
+  return `<div class="post-card">
+    <div class="post-avatar">${avatarInitial(handle)}</div>
+    <div class="post-body">
+      <div class="post-handle">${handle.startsWith('@') ? handle : '@' + handle}</div>
+      ${photoHTML}
+      <div class="post-time">${timeAgo(p.time || p.timestamp)}</div>
+    </div>
+  </div>`;
+}
+
+async function loadPosts() {
+  try {
+    const res  = await fetch(APPS_SCRIPT_URL);
+    const data = await res.json();
+    const posts = data.filter(p => p.source === 'mural');
+    const feed  = document.getElementById('thread-feed');
+    const empty = document.getElementById('thread-empty');
+    if (!posts.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    const html = posts.map(renderPost).join('');
+    if (feed.innerHTML !== html) feed.innerHTML = html;
+  } catch (e) {}
+}
+
+document.getElementById('thread-post').addEventListener('click', async () => {
+  let handle = document.getElementById('handle-input').value.trim();
+  if (!handle) {
+    document.getElementById('handle-input').focus();
+    document.getElementById('handle-input').style.borderBottomColor = '#ff6b35';
+    return;
+  }
+  if (!handle.startsWith('@')) handle = '@' + handle;
+  if (!selectedDataUrl) {
+    document.getElementById('photo-drop').style.borderColor = 'rgba(255,107,53,0.6)';
+    setTimeout(() => document.getElementById('photo-drop').style.borderColor = '', 1200);
+    return;
+  }
+
+  const postBtn = document.getElementById('thread-post');
+  postBtn.disabled = true;
+  postBtn.textContent = 'Posting…';
+
+  // Optimistic render
+  const feed = document.getElementById('thread-feed');
+  document.getElementById('thread-empty').style.display = 'none';
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = renderPost({ name: handle, media: selectedDataUrl, time: Date.now() });
+  feed.insertBefore(tempDiv.firstChild, feed.firstChild);
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        type: 'comment',
+        source: 'mural',
+        name: handle,
+        text: '',
+        media: selectedDataUrl,
+        timestamp: new Date().toISOString()
+      })
+    });
+  } catch (e) {}
+
+  // Reset form
+  document.getElementById('handle-input').value = '';
+  selectedDataUrl = '';
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('preview-img').src = '';
+  document.getElementById('photo-drop').style.display = 'block';
+  document.getElementById('photo-input').value = '';
+  postBtn.disabled = false;
+  postBtn.textContent = 'Post';
+
+  setTimeout(loadPosts, 2000);
+});
+
+// IG handle input validation styling
+document.getElementById('handle-input').addEventListener('input', function() {
+  this.style.borderBottomColor = '';
+});
+
+loadPosts();
+setInterval(loadPosts, 30000);
 </script>
 </body>
 </html>
